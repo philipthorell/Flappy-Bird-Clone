@@ -10,7 +10,7 @@ from debug import Debug
 
 class Game:
     FPS = 60
-    SCALE = 3.5
+    SCALE = 3.5  # 3.5
     VELOCITY = 3
     WIDTH, HEIGHT = 144 * SCALE, 256 * SCALE
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -28,9 +28,19 @@ class Game:
         ground_img = self.get_sprite(293, 0, 460, 56)
         pipe_img = self.get_sprite(55, 324, 82, 484)
         bird_img = self.get_sprite(3, 491, 21, 505)
+        bird2_img = self.get_sprite(31, 491, 49, 505)
+        bird3_img = self.get_sprite(59, 491, 77, 505)
+
+        #blue_bird_img = self.get_sprite(87, 491, 105, 505)
+        #blue_bird2_img = self.get_sprite(115, 329, 133, 343)
+        #blue_bird3_img = self.get_sprite(115, 355, 133, 369)
+
+        #red_bird_img = self.get_sprite(115, 381, 133, 395)
+        #red_bird2_img = self.get_sprite(115, 407, 133, 421)
+        #red_bird3_img = self.get_sprite(115, 433, 133, 447)
 
         self.ground = Ground(ground_img, self.WIDTH, self.HEIGHT, self.VELOCITY)
-        self.bird = Bird(bird_img)
+        self.bird = Bird(bird_img, bird2_img, bird3_img, self.HEIGHT)
         pipe1 = Pipe(pipe_img, self.WIDTH, self.VELOCITY, 1)
         pipe2 = Pipe(pipe_img, self.WIDTH, self.VELOCITY, 2)
         pipe3 = Pipe(pipe_img, self.WIDTH, self.VELOCITY, 3)
@@ -49,13 +59,18 @@ class Game:
         return image
 
     def update(self):
-        self.ground.move()
+        if not self.bird.dead:
+            self.ground.move()
 
-        for pipe in self.pipes:
-            pipe.move(self.bird.x)
+            for pipe in self.pipes:
+                pipe.move(self.bird.x)
+
+            self.bird.check_collision(self.ground.y, self.pipes)
+        else:
+            if not self.bird.death_anim:
+                self.bird.death_animation()
 
         self.bird.update()
-        self.bird.check_collision(self.ground.y, self.pipes)
 
     def draw(self):
         self.screen.fill("lightblue")
@@ -129,6 +144,7 @@ class Game:
             self.draw()
 
             self.clock.tick(self.FPS)
+            print(self.bird.y)
 
         pg.quit()
 
