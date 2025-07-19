@@ -51,32 +51,70 @@ class GameOver:
 
     def __init__(self,
                  images: tuple[pg.Surface],
-                 score_images: tuple[pg.Surface]):
+                 medal_images: tuple[pg.Surface],
+                 score_images: tuple[pg.Surface],
+                 medal_tiers: tuple[int, int, int, int]):
         self.board_img = images[0]
-        self.medal_img = images[1]
-        self.new_img = images[2]
+        self.new_img = images[1]
+        self.medal_imgs = medal_images
         self.score_imgs = score_images
 
+        self.medal_tiers = medal_tiers
+
         self.board_rect = self.board_img.get_rect(center=self.board_pos)
-        self.medal_rect = self.medal_img.get_rect(center=self.medal_pos)
         self.new_rect = self.new_img.get_rect(center=self.new_pos)
 
-    def draw(self, screen: pg.Surface, points: int):
+    def draw(self, screen: pg.Surface, score: int, high_score: int, new_high_score: bool):
         screen.blit(self.board_img, self.board_rect)
-        screen.blit(self.medal_img, self.medal_rect)
-        screen.blit(self.new_img, self.new_rect)
 
-        if points < 10:
-            score1_img = self.score_imgs[0]
-            score2_img = self.score_imgs[0]
-            score3_img = self.score_imgs[points]
-            screen.blit(score1_img, score1_img.get_rect(center=self.score1_pos))
-            screen.blit(score2_img, score2_img.get_rect(center=self.score2_pos))
-            screen.blit(score3_img, score3_img.get_rect(center=self.score3_pos))
+        if high_score >= self.medal_tiers[3]:
+            medal_img = self.medal_imgs[3]
+            medal_rect = medal_img.get_rect(center=self.medal_pos)
+            screen.blit(self.medal_imgs[3], medal_rect)
 
-            screen.blit(score1_img, score1_img.get_rect(center=self.best1_pos))
-            screen.blit(score2_img, score2_img.get_rect(center=self.best2_pos))
-            screen.blit(score3_img, score3_img.get_rect(center=self.best3_pos))
+        elif high_score >= self.medal_tiers[2]:
+            medal_img = self.medal_imgs[2]
+            medal_rect = medal_img.get_rect(center=self.medal_pos)
+            screen.blit(self.medal_imgs[2], medal_rect)
+
+        elif high_score >= self.medal_tiers[1]:
+            medal_img = self.medal_imgs[1]
+            medal_rect = medal_img.get_rect(center=self.medal_pos)
+            screen.blit(self.medal_imgs[1], medal_rect)
+
+        elif high_score >= self.medal_tiers[0]:
+            medal_img = self.medal_imgs[0]
+            medal_rect = medal_img.get_rect(center=self.medal_pos)
+            screen.blit(self.medal_imgs[0], medal_rect)
+
+        if new_high_score:
+            high_score = score
+            screen.blit(self.new_img, self.new_rect)
+
+        score_str = str(score).zfill(3)
+        high_score_str = str(high_score).zfill(3)
+
+        s1 = int(score_str[0])
+        s2 = int(score_str[1])
+        s3 = int(score_str[2])
+
+        hs1 = int(high_score_str[0])
+        hs2 = int(high_score_str[1])
+        hs3 = int(high_score_str[2])
+
+        score1_img = self.score_imgs[s1]
+        score2_img = self.score_imgs[s2]
+        score3_img = self.score_imgs[s3]
+        screen.blit(score1_img, score1_img.get_rect(center=self.score1_pos))
+        screen.blit(score2_img, score2_img.get_rect(center=self.score2_pos))
+        screen.blit(score3_img, score3_img.get_rect(center=self.score3_pos))
+
+        high_score1_img = self.score_imgs[hs1]
+        high_score2_img = self.score_imgs[hs2]
+        high_score3_img = self.score_imgs[hs3]
+        screen.blit(high_score1_img, high_score1_img.get_rect(center=self.best1_pos))
+        screen.blit(high_score2_img, high_score2_img.get_rect(center=self.best2_pos))
+        screen.blit(high_score3_img, high_score3_img.get_rect(center=self.best3_pos))
 
     def button_pressed(self, mouse_pos):
         pass

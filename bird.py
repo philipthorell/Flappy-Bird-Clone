@@ -28,8 +28,7 @@ class Bird:
         self.y_velocity = self.jump_power
 
     def update(self):
-        if self.y < self.SCREEN_HEIGHT:
-            print(self.y, self.SCREEN_HEIGHT)
+        if self.y <= self.SCREEN_HEIGHT:
             self.y_velocity += self.gravity
             self.y += self.y_velocity
             self.rect.center = (self.x + (self.rect.width / 2),
@@ -54,9 +53,7 @@ class Bird:
 
     def check_collision(self, ground_y, pipes: list):
         if self.rect.collidepoint(self.rect.x, ground_y):
-            print("Hit ground - DEAD")
             self.dead = True
-            return True
 
         for pipe in pipes:
 
@@ -67,14 +64,7 @@ class Bird:
             b_collision = self.mask.overlap(pipe.bottom_mask, bottom_offset)
 
             if t_collision or b_collision:
-                if t_collision:
-                    print("TOP!")
-                if b_collision:
-                    print("BOTTOM!")
                 self.dead = True
-                return True
-
-        return False
 
     def death_animation(self):
         self.image = pg.transform.rotozoom(self.falling_img, 50, 1)

@@ -18,6 +18,11 @@ class Game:
     clock = pg.time.Clock()
     running = True
 
+    bronze = 25
+    silver = 50
+    gold = 100
+    platinum = 200
+
     def __init__(self):
         pg.init()
 
@@ -29,6 +34,7 @@ class Game:
         pipe_img = self.sprite_loader.get_pipe()
         main_menu_imgs = self.sprite_loader.get_main_menu()
         game_over_imgs = self.sprite_loader.get_game_over()
+        medal_imgs = self.sprite_loader.get_medal()
         score_imgs = self.sprite_loader.get_score()
 
         self.ground = Ground(ground_img, self.WIDTH, self.HEIGHT, self.VELOCITY)
@@ -38,23 +44,56 @@ class Game:
         pipe3 = Pipe(pipe_img, self.WIDTH, self.VELOCITY, 3)
         self.pipes = [pipe1, pipe2, pipe3]
         self.main_menu_screen = MainMenu(main_menu_imgs, bird_imgs)
-        self.game_over_screen = GameOver(game_over_imgs, score_imgs)
+        self.game_over_screen = GameOver(game_over_imgs, medal_imgs, score_imgs,
+                                         (self.bronze, self.silver, self.gold, self.platinum))
 
         self.main_menu = True
         self.game_over = False
         self.gaming = False
 
         self.points = 0
+        self.high_score = 0
+
+        self.read_high_score()
+
+        self.updated_score_file = False
+        self.new_high_score = False
 
         self.debug_state = False
         self.debug = Debug(self.screen)
 
+    def read_high_score(self):
+        try:
+            with open("score.txt", "r") as file:
+                try:
+                    self.high_score = int(file.readline())
+                    if self.high_score > 999:
+                        self.high_score = 999
+                except ValueError:
+                    pass
+        except FileNotFoundError:
+            pass
+
+    def update_high_score(self):
+        if self.points > self.high_score:
+            self.new_high_score = True
+            self.high_score = self.points
+            with open("score.txt", "w") as file:
+                file.write(str(self.high_score))
+
+        self.updated_score_file = True
+
     def update(self):
         if self.main_menu:
             self.ground.move()
+            if self.updated_score_file:
+                self.updated_score_file = False
+            if self.new_high_score:
+                self.new_high_score = False
 
         elif self.game_over:
-            pass
+            if not self.updated_score_file:
+                self.update_high_score()
 
         elif self.gaming:
             if not self.bird.dead:
@@ -71,7 +110,6 @@ class Game:
             self.bird.update()
 
             if self.bird.y > self.HEIGHT:
-                print("DONE")
                 self.game_over = True
                 self.gaming = False
 
@@ -89,11 +127,11 @@ class Game:
         if self.main_menu:
             self.main_menu_screen.draw(self.screen)
 
-        elif self.gaming:
+        if self.gaming:
             self.bird.draw(self.screen)
 
-        elif self.game_over:
-            self.game_over_screen.draw(self.screen, self.points)
+        if self.game_over:
+            self.game_over_screen.draw(self.screen, self.points, self.high_score, self.new_high_score)
 
         if self.debug_state:
             self.show_debug_info()
@@ -143,16 +181,6 @@ class Game:
                 None,
                 None
             )
-            self.debug.show(
-                self.game_over_screen.score_imgs[0].get_rect(center=self.game_over_screen.score2_pos),
-                None,
-                None
-            )
-            self.debug.show(
-                self.game_over_screen.score_imgs[0].get_rect(center=self.game_over_screen.score3_pos),
-                None,
-                None
-            )
 
     def handle_input(self, event):
         if event.type == pg.KEYDOWN:
@@ -170,7 +198,6 @@ class Game:
         if event.type == pg.MOUSEBUTTONDOWN:
             if self.main_menu:
                 if self.main_menu_screen.start_pressed(pg.mouse.get_pos()):
-                    print("LOL")
                     self.gaming = True
                     self.main_menu = False
                 if self.main_menu_screen.leaderboard_pressed(pg.mouse.get_pos()):

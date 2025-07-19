@@ -48,10 +48,17 @@ class SpriteLoader:
 
     def get_game_over(self):
         board_img = self.get_sprite(3, 259, 117, 318)
-        medal_img = self.get_sprite(112, 477, 135, 500)
         new_img = self.get_sprite(112, 501, 129, 510)
-        game_over_imgs = (board_img, medal_img, new_img)
+        game_over_imgs = (board_img, new_img)
         return game_over_imgs
+
+    def get_medal(self):
+        bronze_img = self.get_sprite(112, 477, 135, 500)
+        silver_img = self.get_sprite(112, 453, 135, 476)
+        gold_img = self.get_sprite(121, 284, 144, 307)
+        platinum_img = self.get_sprite(121, 258, 144, 281)
+        medal_imgs = (bronze_img, silver_img, gold_img, platinum_img)
+        return medal_imgs
 
     def get_score(self):
         score_zero_img = self.get_sprite(147, 258, 157, 271)
