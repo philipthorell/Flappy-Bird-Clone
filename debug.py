@@ -15,13 +15,13 @@ class Debug:
              mask: pg.Mask = None,
              position: pg.Vector2 = None,
              rect_color: str = None,
-             mask_color: str = None):
+             coords_color: str = None):
         if rect:
             self.draw_rect(rect, rect_color)
         if rect and mask:
-            self.draw_mask(rect, mask, mask_color)
+            self.draw_mask(rect, mask)
         if position:
-            self.draw_coords(position)
+            self.draw_coords(position, coords_color)
 
     def draw_rect(self, rect: pg.Rect, color=None):
         """Draw the collision rectangle for debugging"""
@@ -38,13 +38,15 @@ class Debug:
             if len(screen_points) > 2:
                 pg.draw.polygon(self.screen, color, screen_points, 2)
 
-    def draw_coords(self, position: pg.Vector2):
+    def draw_coords(self, position: pg.Vector2, custom_color=None):
         # Draw center point
-        pg.draw.circle(self.screen, self.coords_color, (int(position.x), int(position.y)), 2)
+        color = custom_color or self.coords_color
+
+        pg.draw.circle(self.screen, color, (int(position.x), int(position.y)), 2)
 
         # Draw position text
         font = pg.font.Font(None, 20)
-        pos_text = font.render(f"({int(position.x)}, {int(position.y)})", True, self.coords_color)
+        pos_text = font.render(f"({int(position.x)}, {int(position.y)})", True, color)
         self.screen.blit(pos_text, (position.x + 10, position.y - 10))
 
     def show_ground(self, y_ground, screen_width):

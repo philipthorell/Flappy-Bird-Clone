@@ -1,10 +1,10 @@
-import random
-
 import pygame as pg
 
+from sprite_loader import SpriteLoader
 from ground import Ground
 from bird import Bird
 from pipe import Pipe
+from menu import MainMenu, GameOver
 from debug import Debug
 
 
@@ -16,73 +16,84 @@ class Game:
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     pg.display.set_caption("Flappy Birb")
     clock = pg.time.Clock()
-    loop_running = True
+    running = True
 
     def __init__(self):
         pg.init()
-        sprite_path = "D:/Game Sprites/Flappy Bird/Mobile - Flappy Bird - Version 12 Sprites.png"
-        self.sprite_sheet = pg.image.load(sprite_path)
-        self.sprite_sheet = pg.transform.rotozoom(self.sprite_sheet, 0, self.SCALE)
 
-        self.background_img = self.get_sprite(0, 0, 144, 256)
-        ground_img = self.get_sprite(293, 0, 460, 56)
-        pipe_img = self.get_sprite(55, 324, 82, 484)
-        bird_img = self.get_sprite(3, 491, 21, 505)
-        bird2_img = self.get_sprite(31, 491, 49, 505)
-        bird3_img = self.get_sprite(59, 491, 77, 505)
+        self.sprite_loader = SpriteLoader(self.SCALE)
 
-        #blue_bird_img = self.get_sprite(87, 491, 105, 505)
-        #blue_bird2_img = self.get_sprite(115, 329, 133, 343)
-        #blue_bird3_img = self.get_sprite(115, 355, 133, 369)
-
-        #red_bird_img = self.get_sprite(115, 381, 133, 395)
-        #red_bird2_img = self.get_sprite(115, 407, 133, 421)
-        #red_bird3_img = self.get_sprite(115, 433, 133, 447)
+        self.bg_img = self.sprite_loader.get_background()
+        ground_img = self.sprite_loader.get_ground()
+        bird_imgs = self.sprite_loader.get_bird()
+        pipe_img = self.sprite_loader.get_pipe()
+        main_menu_imgs = self.sprite_loader.get_main_menu()
+        game_over_imgs = self.sprite_loader.get_game_over()
+        score_imgs = self.sprite_loader.get_score()
 
         self.ground = Ground(ground_img, self.WIDTH, self.HEIGHT, self.VELOCITY)
-        self.bird = Bird(bird_img, bird2_img, bird3_img, self.HEIGHT)
+        self.bird = Bird(bird_imgs, self.HEIGHT)
         pipe1 = Pipe(pipe_img, self.WIDTH, self.VELOCITY, 1)
         pipe2 = Pipe(pipe_img, self.WIDTH, self.VELOCITY, 2)
         pipe3 = Pipe(pipe_img, self.WIDTH, self.VELOCITY, 3)
         self.pipes = [pipe1, pipe2, pipe3]
+        self.main_menu_screen = MainMenu(main_menu_imgs, bird_imgs)
+        self.game_over_screen = GameOver(game_over_imgs, score_imgs)
+
+        self.main_menu = True
+        self.game_over = False
+        self.gaming = False
+
+        self.points = 0
 
         self.debug_state = False
         self.debug = Debug(self.screen)
 
-    def get_sprite(self, x1, y1, x2, y2):
-        """ Gets a sprite from the sprite sheet """
-        start_pos = pg.Vector2(x1, y1) * self.SCALE  # since sprite sheet is scaled
-        end_pos = pg.Vector2(x2, y2) * self.SCALE
-        width, height = (end_pos - start_pos)
-        image = pg.Surface((width, height), pg.SRCALPHA)
-        image.blit(self.sprite_sheet, (0, 0), area=(start_pos.x, start_pos.y, width, height))
-        return image
-
     def update(self):
-        if not self.bird.dead:
+        if self.main_menu:
             self.ground.move()
 
-            for pipe in self.pipes:
-                pipe.move(self.bird.x)
+        elif self.game_over:
+            pass
+
+        elif self.gaming:
+            if not self.bird.dead:
+                self.ground.move()
+
+                for pipe in self.pipes:
+                    pipe.move(self.bird.x)
+                    if not pipe.passed and self.bird.x > pipe.x + pipe.width:
+                        self.points += 1
+                        pipe.passed = True
 
             self.bird.check_collision(self.ground.y, self.pipes)
-        else:
-            if not self.bird.death_anim:
-                self.bird.death_animation()
 
-        self.bird.update()
+            self.bird.update()
+
+            if self.bird.y > self.HEIGHT:
+                print("DONE")
+                self.game_over = True
+                self.gaming = False
 
     def draw(self):
         self.screen.fill("lightblue")
 
-        self.screen.blit(self.background_img, (0, 0))
+        self.screen.blit(self.bg_img, (0, 0))
 
-        for pipe in self.pipes:
-            pipe.draw(self.screen)
+        if self.gaming or self.game_over:
+            for pipe in self.pipes:
+                pipe.draw(self.screen)
 
         self.ground.draw(self.screen)
 
-        self.bird.draw(self.screen)
+        if self.main_menu:
+            self.main_menu_screen.draw(self.screen)
+
+        elif self.gaming:
+            self.bird.draw(self.screen)
+
+        elif self.game_over:
+            self.game_over_screen.draw(self.screen, self.points)
 
         if self.debug_state:
             self.show_debug_info()
@@ -90,61 +101,102 @@ class Game:
         pg.display.flip()
 
     def show_debug_info(self):
-        self.debug.show_ground(
-            self.ground.y,
-            self.WIDTH
-        )
-
-        self.debug.show(
-            self.bird.rect,
-            self.bird.mask,
-            pg.Vector2((self.bird.x, self.bird.y))
-        )
-
-        for pipe in self.pipes:
+        if self.main_menu:
             self.debug.show(
-                pipe.top_rect,
-                pipe.top_mask,
-                pg.Vector2(pipe.x, pipe.top)
+                self.main_menu_screen.start_rect,
+                None,
+                pg.Vector2(self.main_menu_screen.start_pos),
+                coords_color="black"
             )
             self.debug.show(
-                pipe.bottom_rect,
-                pipe.bottom_mask,
-                pg.Vector2(pipe.x, pipe.bottom)
+                self.main_menu_screen.leaderboard_rect,
+                None,
+                pg.Vector2(self.main_menu_screen.leaderboard_pos),
+                coords_color="black"
             )
+
+        elif self.gaming:
+            self.debug.show_ground(
+                self.ground.y,
+                self.WIDTH
+            )
+            self.debug.show(
+                self.bird.rect,
+                self.bird.mask,
+                pg.Vector2((self.bird.x, self.bird.y))
+            )
+            for pipe in self.pipes:
+                self.debug.show(
+                    pipe.top_rect,
+                    pipe.top_mask,
+                    pg.Vector2(pipe.x, pipe.top)
+                )
+                self.debug.show(
+                    pipe.bottom_rect,
+                    pipe.bottom_mask,
+                    pg.Vector2(pipe.x, pipe.bottom)
+                )
+
+        elif self.game_over:
+            self.debug.show(
+                self.game_over_screen.score_imgs[0].get_rect(center=self.game_over_screen.score1_pos),
+                None,
+                None
+            )
+            self.debug.show(
+                self.game_over_screen.score_imgs[0].get_rect(center=self.game_over_screen.score2_pos),
+                None,
+                None
+            )
+            self.debug.show(
+                self.game_over_screen.score_imgs[0].get_rect(center=self.game_over_screen.score3_pos),
+                None,
+                None
+            )
+
+    def handle_input(self, event):
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_F1:
+                self.debug_state = not self.debug_state
+
+            if self.gaming and event.key == pg.K_SPACE and not self.bird.jumping:
+                self.bird.jumping = True
+                self.bird.jump()
+
+        if self.gaming and event.type == pg.KEYUP:
+            if event.key == pg.K_SPACE and self.bird.jumping:
+                self.bird.jumping = False
+
+        if event.type == pg.MOUSEBUTTONDOWN:
+            if self.main_menu:
+                if self.main_menu_screen.start_pressed(pg.mouse.get_pos()):
+                    print("LOL")
+                    self.gaming = True
+                    self.main_menu = False
+                if self.main_menu_screen.leaderboard_pressed(pg.mouse.get_pos()):
+                    pass
+
+            elif self.gaming and not self.bird.jumping:
+                self.bird.jumping = True
+                self.bird.jump()
+
+        if self.gaming and event.type == pg.MOUSEBUTTONUP and self.bird.jumping:
+            self.bird.jumping = False
 
     def run(self):
-        while self.loop_running:
+        while self.running:
             # Handle events
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    self.loop_running = False
+                    self.running = False
 
-                if event.type == pg.KEYDOWN:
-                    if event.key == pg.K_SPACE and not self.bird.jumping:
-                        self.bird.jumping = True
-                        self.bird.jump()
-
-                    if event.key == pg.K_F1:
-                        self.debug_state = not self.debug_state
-
-                if event.type == pg.KEYUP:
-                    if event.key == pg.K_SPACE and self.bird.jumping:
-                        self.bird.jumping = False
-
-                if event.type == pg.MOUSEBUTTONDOWN and not self.bird.jumping:
-                    self.bird.jumping = True
-                    self.bird.jump()
-
-                if event.type == pg.MOUSEBUTTONUP and self.bird.jumping:
-                    self.bird.jumping = False
+                self.handle_input(event)
 
             self.update()
 
             self.draw()
 
             self.clock.tick(self.FPS)
-            print(self.bird.y)
 
         pg.quit()
 

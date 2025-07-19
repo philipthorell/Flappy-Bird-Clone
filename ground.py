@@ -1,6 +1,3 @@
-import pygame as pg
-
-
 class Ground:
 
     def __init__(self, image, SCREEN_WIDTH, SCREEN_HEIGHT, VELOCITY):

@@ -1,6 +1,6 @@
-import random
-
 import pygame as pg
+
+import random
 
 
 class Pipe:
@@ -14,10 +14,9 @@ class Pipe:
         self.VELOCITY = VELOCITY
 
         self.x = SCREEN_WIDTH + (250 * (POSITION - 1))
-        self.image = image
 
-        self.pipe_top = self.image
-        self.pipe_bottom = pg.transform.flip(self.image, False, True)
+        self.pipe_top = image
+        self.pipe_bottom = pg.transform.flip(image, False, True)
 
         self.width = self.pipe_top.get_width()
 
@@ -28,6 +27,8 @@ class Pipe:
         self.bottom_mask = pg.mask.from_surface(self.pipe_bottom)
 
         self.set_height()
+
+        self.passed = False
 
     def set_height(self):
         self.height = random.randrange(50, 450)
@@ -47,6 +48,7 @@ class Pipe:
         if self.x + self.width <= 0:
             self.x = self.SCREEN_WIDTH + 150
             self.set_height()
+            self.passed = False
 
     def draw(self, screen: pg.Surface):
         screen.blit(self.pipe_top, (self.x, self.top))
