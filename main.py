@@ -23,6 +23,12 @@ class Game:
     gold = 100
     platinum = 200
 
+    single_point_pos = pg.Vector2(504 / 2, 100)
+    double_point_pos1 = pg.Vector2(504 / 2 - 22, 100)
+    double_point_pos2 = pg.Vector2(504 / 2 + 22, 100)
+    triple_point_pos1 = pg.Vector2(504 / 2 - 43, 100)
+    triple_point_pos3 = pg.Vector2(504 / 2 + 43, 100)
+
     def __init__(self):
         pg.init()
 
@@ -32,6 +38,7 @@ class Game:
         ground_img = self.sprite_loader.get_ground()
         bird_imgs = self.sprite_loader.get_bird()
         self.pipe_img = self.sprite_loader.get_pipe()
+        self.point_imgs = self.sprite_loader.get_points()
         main_menu_imgs = self.sprite_loader.get_main_menu()
         game_over_imgs = self.sprite_loader.get_game_over()
         medal_imgs = self.sprite_loader.get_medal()
@@ -93,7 +100,6 @@ class Game:
         self.updated_score_file = False
         self.new_high_score = False
 
-
     def update(self):
         if self.main_menu:
             self.ground.move()
@@ -124,6 +130,24 @@ class Game:
                 self.game_over = True
                 self.gaming = False
 
+    def draw_points(self):
+        points_str = str(self.points)
+        if len(points_str) == 1:
+            point_img = self.point_imgs[self.points]
+            self.screen.blit(point_img, point_img.get_rect(center=self.single_point_pos))
+        elif len(points_str) == 2:
+            point_img1 = self.point_imgs[int(points_str[0])]
+            point_img2 = self.point_imgs[int(points_str[1])]
+            self.screen.blit(point_img1, point_img1.get_rect(center=self.double_point_pos1))
+            self.screen.blit(point_img2, point_img2.get_rect(center=self.double_point_pos2))
+        elif len(points_str) == 3:
+            point_img1 = self.point_imgs[int(points_str[0])]
+            point_img2 = self.point_imgs[int(points_str[1])]
+            point_img3 = self.point_imgs[int(points_str[2])]
+            self.screen.blit(point_img1, point_img1.get_rect(center=self.triple_point_pos1))
+            self.screen.blit(point_img2, point_img2.get_rect(center=self.single_point_pos))
+            self.screen.blit(point_img3, point_img3.get_rect(center=self.triple_point_pos3))
+
     def draw(self):
         self.screen.fill("lightblue")
 
@@ -132,6 +156,8 @@ class Game:
         if self.gaming or self.game_over:
             for pipe in self.pipes:
                 pipe.draw(self.screen)
+
+            self.draw_points()
 
         self.ground.draw(self.screen)
 
@@ -198,7 +224,7 @@ class Game:
             if event.key == pg.K_F1:
                 self.debug_state = not self.debug_state
 
-            if self.gaming and event.key == pg.K_SPACE and not self.bird.jumping:
+            if self.gaming and event.key == pg.K_SPACE and not self.bird.dead and not self.bird.jumping:
                 self.bird.jumping = True
                 self.bird.jump()
 
@@ -215,7 +241,7 @@ class Game:
                 elif self.main_menu_screen.leaderboard_pressed(mouse_pos):
                     pass
 
-            elif self.gaming and not self.bird.jumping:
+            elif self.gaming and not self.bird.dead and not self.bird.jumping:
                 self.bird.jumping = True
                 self.bird.jump()
 

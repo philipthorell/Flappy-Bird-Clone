@@ -39,6 +39,22 @@ class SpriteLoader:
         pipe_img = self.get_sprite(55, 324, 82, 484)
         return pipe_img
 
+    def get_points(self):
+        zero_img = self.get_sprite(292, 158, 307, 179)
+        one_img = self.get_sprite(310, 158, 321, 179)
+        two_img = self.get_sprite(324, 158, 339, 179)
+        three_img = self.get_sprite(340, 158, 355, 179)
+        four_img = self.get_sprite(356, 158, 371, 179)
+        five_img = self.get_sprite(292, 182, 307, 203)
+        six_img = self.get_sprite(308, 182, 323, 203)
+        seven_img = self.get_sprite(324, 182, 339, 203)
+        eight_img = self.get_sprite(340, 182, 355, 203)
+        nine_img = self.get_sprite(356, 182, 371, 203)
+        point_imgs = (zero_img, one_img, two_img, three_img,
+                      four_img, five_img, six_img, seven_img,
+                      eight_img, nine_img)
+        return point_imgs
+
     def get_main_menu(self):
         title_img = self.get_sprite(351, 91, 441, 116)
         start_img = self.get_sprite(354, 118, 407, 147)
