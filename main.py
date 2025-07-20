@@ -56,7 +56,7 @@ class Game:
         pipe2 = Pipe(self.pipe_imgs, self.WIDTH, self.VELOCITY, 2, self.day)
         pipe3 = Pipe(self.pipe_imgs, self.WIDTH, self.VELOCITY, 3, self.day)
         self.pipes = [pipe1, pipe2, pipe3]
-        self.main_menu_screen = MainMenu(main_menu_imgs, bird_imgs)
+        self.main_menu_screen = MainMenu(main_menu_imgs, bird_imgs, 75)
         self.game_over_screen = GameOver(game_over_imgs, medal_imgs, score_imgs,
                                          (self.bronze, self.silver, self.gold, self.platinum))
 
@@ -118,6 +118,7 @@ class Game:
     def update(self):
         if self.main_menu:
             self.ground.move()
+            self.main_menu_screen.animation()
             if self.updated_score_file:
                 self.updated_score_file = False
             if self.new_high_score:

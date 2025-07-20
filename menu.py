@@ -7,23 +7,37 @@ class MainMenu:
     mode_pos = pg.Vector2(375, 600)
     bird_pos = pg.Vector2(250, 350)
 
-    def __init__(self, images: tuple[pg.Surface], bird_imgs: tuple[pg.Surface]):
+    def __init__(self, images: tuple[pg.Surface], bird_imgs: tuple[pg.Surface], anim_cooldown):
 
         self.title_img = images[0]
         self.start_img = images[1]
         self.day_img = images[2]
         self.night_img = images[3]
-        self.bird_img = bird_imgs[0]
+        self.bird_imgs = bird_imgs + (bird_imgs[1], )
 
         self.title_rect = self.title_img.get_rect(center=self.title_pos)
         self.start_rect = self.start_img.get_rect(center=self.start_pos)
-        self.bird_rect = self.bird_img.get_rect(center=self.bird_pos)
         self.mode_rect = self.day_img.get_rect(center=self.mode_pos)
+
+        self.animation_cooldown = anim_cooldown  # milliseconds
+        self.bird_frame = 0
+        self.last_time = pg.time.get_ticks()
+
+    def animation(self):
+        current_time = pg.time.get_ticks()
+        if current_time - self.last_time > self.animation_cooldown:
+            self.last_time = current_time
+            self.bird_frame += 1
+            if self.bird_frame >= len(self.bird_imgs):
+                self.bird_frame = 0
 
     def draw(self, screen: pg.Surface, day_time: bool):
         screen.blit(self.title_img, self.title_rect)
         screen.blit(self.start_img, self.start_rect)
-        screen.blit(self.bird_img, self.bird_rect)
+
+        bird_img = self.bird_imgs[self.bird_frame]
+        bird_rect = bird_img.get_rect(center=self.bird_pos)
+        screen.blit(bird_img, bird_rect)
 
         mode_img = self.night_img
         mode_rect = mode_img.get_rect(center=self.mode_pos)
