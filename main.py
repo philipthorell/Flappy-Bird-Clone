@@ -31,7 +31,7 @@ class Game:
         self.bg_img = self.sprite_loader.get_background()
         ground_img = self.sprite_loader.get_ground()
         bird_imgs = self.sprite_loader.get_bird()
-        pipe_img = self.sprite_loader.get_pipe()
+        self.pipe_img = self.sprite_loader.get_pipe()
         main_menu_imgs = self.sprite_loader.get_main_menu()
         game_over_imgs = self.sprite_loader.get_game_over()
         medal_imgs = self.sprite_loader.get_medal()
@@ -39,9 +39,9 @@ class Game:
 
         self.ground = Ground(ground_img, self.WIDTH, self.HEIGHT, self.VELOCITY)
         self.bird = Bird(bird_imgs, self.HEIGHT)
-        pipe1 = Pipe(pipe_img, self.WIDTH, self.VELOCITY, 1)
-        pipe2 = Pipe(pipe_img, self.WIDTH, self.VELOCITY, 2)
-        pipe3 = Pipe(pipe_img, self.WIDTH, self.VELOCITY, 3)
+        pipe1 = Pipe(self.pipe_img, self.WIDTH, self.VELOCITY, 1)
+        pipe2 = Pipe(self.pipe_img, self.WIDTH, self.VELOCITY, 2)
+        pipe3 = Pipe(self.pipe_img, self.WIDTH, self.VELOCITY, 3)
         self.pipes = [pipe1, pipe2, pipe3]
         self.main_menu_screen = MainMenu(main_menu_imgs, bird_imgs)
         self.game_over_screen = GameOver(game_over_imgs, medal_imgs, score_imgs,
@@ -82,6 +82,17 @@ class Game:
                 file.write(str(self.high_score))
 
         self.updated_score_file = True
+
+    def reset(self):
+        self.bird.reset()
+        pipe1 = Pipe(self.pipe_img, self.WIDTH, self.VELOCITY, 1)
+        pipe2 = Pipe(self.pipe_img, self.WIDTH, self.VELOCITY, 2)
+        pipe3 = Pipe(self.pipe_img, self.WIDTH, self.VELOCITY, 3)
+        self.pipes = [pipe1, pipe2, pipe3]
+        self.points = 0
+        self.updated_score_file = False
+        self.new_high_score = False
+
 
     def update(self):
         if self.main_menu:
@@ -196,16 +207,27 @@ class Game:
                 self.bird.jumping = False
 
         if event.type == pg.MOUSEBUTTONDOWN:
+            mouse_pos = pg.mouse.get_pos()
             if self.main_menu:
-                if self.main_menu_screen.start_pressed(pg.mouse.get_pos()):
+                if self.main_menu_screen.start_pressed(mouse_pos):
                     self.gaming = True
                     self.main_menu = False
-                if self.main_menu_screen.leaderboard_pressed(pg.mouse.get_pos()):
+                elif self.main_menu_screen.leaderboard_pressed(mouse_pos):
                     pass
 
             elif self.gaming and not self.bird.jumping:
                 self.bird.jumping = True
                 self.bird.jump()
+
+            elif self.game_over:
+                if self.game_over_screen.menu_pressed(mouse_pos):
+                    self.main_menu = True
+                    self.game_over = False
+                    self.reset()
+                elif self.game_over_screen.ok_pressed(mouse_pos):
+                    self.gaming = True
+                    self.game_over = False
+                    self.reset()
 
         if self.gaming and event.type == pg.MOUSEBUTTONUP and self.bird.jumping:
             self.bird.jumping = False

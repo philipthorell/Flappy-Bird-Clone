@@ -35,7 +35,6 @@ class Bird:
                                 self.y + (self.rect.height / 2))
 
         if self.dead and not self.death_anim:
-            print("HELLO")
             self.death_animation()
 
     def draw(self, screen: pg.Surface):
@@ -70,3 +69,11 @@ class Bird:
         self.image = pg.transform.rotozoom(self.falling_img, 50, 1)
         self.y_velocity = self.jump_power
         self.death_anim = True
+
+    def reset(self):
+        self.x = 50
+        self.y = 50
+        self.y_velocity = 0
+        self.jumping = False
+        self.dead = False
+        self.death_anim = False

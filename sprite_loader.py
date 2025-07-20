@@ -47,9 +47,12 @@ class SpriteLoader:
         return main_menu_imgs
 
     def get_game_over(self):
+        title_img = self.get_sprite(393, 57, 492, 81)
         board_img = self.get_sprite(3, 259, 117, 318)
         new_img = self.get_sprite(112, 501, 129, 510)
-        game_over_imgs = (board_img, new_img)
+        menu_img = self.get_sprite(461, 21, 504, 38)
+        ok_img = self.get_sprite(461, 39, 504, 56)
+        game_over_imgs = (title_img, board_img, new_img, menu_img, ok_img)
         return game_over_imgs
 
     def get_medal(self):
