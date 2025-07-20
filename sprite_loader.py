@@ -27,17 +27,25 @@ class SpriteLoader:
         image.blit(self.sprite_sheet, (0, 0), area=(start_pos.x, start_pos.y, width, height))
         return image
 
+    def get_cursor(self):
+        cursor_img = self.get_sprite(258, 258, 271, 274)
+        return cursor_img
+
     def get_background(self):
         background_img = self.get_sprite(0, 0, 144, 256)
-        return background_img
+        background_night_img = self.get_sprite(146, 0, 290, 256)
+        bg_imgs = (background_img, background_night_img)
+        return bg_imgs
 
     def get_ground(self):
         ground_img = self.get_sprite(293, 0, 460, 56)
         return ground_img
 
     def get_pipe(self):
-        pipe_img = self.get_sprite(55, 324, 82, 484)
-        return pipe_img
+        pipe_img = self.get_sprite(35, 323, 62, 484)
+        pipe_night_img = self.get_sprite(2, 323, 29, 484)
+        pipe_imgs = (pipe_img, pipe_night_img)
+        return pipe_imgs
 
     def get_points(self):
         zero_img = self.get_sprite(292, 158, 307, 179)
@@ -57,9 +65,10 @@ class SpriteLoader:
 
     def get_main_menu(self):
         title_img = self.get_sprite(351, 91, 441, 116)
-        start_img = self.get_sprite(354, 118, 407, 147)
-        leaderboard_img = self.get_sprite(414, 118, 467, 147)
-        main_menu_imgs = (title_img, start_img, leaderboard_img)
+        start_img = self.get_sprite(354, 118, 407, 148)
+        day_img = self.get_sprite(376, 159, 429, 189)
+        night_img = self.get_sprite(434, 159, 487, 189)
+        main_menu_imgs = (title_img, start_img, day_img, night_img)
         return main_menu_imgs
 
     def get_game_over(self):

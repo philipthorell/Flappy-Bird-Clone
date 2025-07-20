@@ -4,35 +4,41 @@ import pygame as pg
 class MainMenu:
     title_pos = pg.Vector2(250, 150)
     start_pos = pg.Vector2(125, 600)  # divide with scaling to get raw value
-    leaderboard_pos = pg.Vector2(375, 600)
+    mode_pos = pg.Vector2(375, 600)
     bird_pos = pg.Vector2(250, 350)
 
     def __init__(self, images: tuple[pg.Surface], bird_imgs: tuple[pg.Surface]):
 
         self.title_img = images[0]
         self.start_img = images[1]
-        self.leaderboard_img = images[2]
+        self.day_img = images[2]
+        self.night_img = images[3]
         self.bird_img = bird_imgs[0]
 
         self.title_rect = self.title_img.get_rect(center=self.title_pos)
         self.start_rect = self.start_img.get_rect(center=self.start_pos)
-        self.leaderboard_rect = self.leaderboard_img.get_rect(center=self.leaderboard_pos)
         self.bird_rect = self.bird_img.get_rect(center=self.bird_pos)
+        self.mode_rect = self.day_img.get_rect(center=self.mode_pos)
 
-    def draw(self, screen: pg.Surface):
+    def draw(self, screen: pg.Surface, day_time: bool):
         screen.blit(self.title_img, self.title_rect)
         screen.blit(self.start_img, self.start_rect)
-        screen.blit(self.leaderboard_img, self.leaderboard_rect)
         screen.blit(self.bird_img, self.bird_rect)
+
+        mode_img = self.night_img
+        mode_rect = mode_img.get_rect(center=self.mode_pos)
+        if day_time:
+            mode_img = self.day_img
+            mode_rect = mode_img.get_rect(center=self.mode_pos)
+        screen.blit(mode_img, mode_rect)
 
     def start_pressed(self, mouse_pos):
         if self.start_rect.collidepoint(mouse_pos):
             return True
         return False
 
-    def leaderboard_pressed(self, mouse_pos):
-        if self.leaderboard_rect.collidepoint(mouse_pos):
-            print("LEADERBOARD")
+    def mode_pressed(self, mouse_pos):
+        if self.mode_rect.collidepoint(mouse_pos):
             return True
         return False
 

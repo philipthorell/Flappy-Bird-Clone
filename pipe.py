@@ -9,14 +9,22 @@ class Pipe:
     top = 0
     bottom = 0
 
-    def __init__(self, image: pg.Surface, SCREEN_WIDTH, VELOCITY, POSITION):
+    def __init__(self, images: tuple[pg.Surface], SCREEN_WIDTH, VELOCITY, POSITION, DAY_TIME):
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.VELOCITY = VELOCITY
 
         self.x = SCREEN_WIDTH + (250 * (POSITION - 1))
 
-        self.pipe_top = image
-        self.pipe_bottom = pg.transform.flip(image, False, True)
+        self.day_pipe = images[0]
+        self.night_pipe = images[1]
+
+        if DAY_TIME:
+            pipe_sprite = self.day_pipe
+        else:
+            pipe_sprite = self.night_pipe
+
+        self.pipe_top = pipe_sprite
+        self.pipe_bottom = pg.transform.flip(pipe_sprite, False, True)
 
         self.width = self.pipe_top.get_width()
 
@@ -35,7 +43,15 @@ class Pipe:
         self.top = self.height - self.pipe_top.get_height()
         self.bottom = self.height + self.gap
 
-    def move(self, bird_x):
+    def change_sprite(self, day_time: bool):
+        if day_time:
+            self.pipe_top = self.day_pipe
+            self.pipe_bottom = pg.transform.flip(self.day_pipe, False, True)
+        else:
+            self.pipe_top = self.night_pipe
+            self.pipe_bottom = pg.transform.flip(self.night_pipe, False, True)
+
+    def move(self):
         self.x -= self.VELOCITY
         self.top_rect.center = (self.x + (self.width / 2),
                                 self.top + (self.pipe_top.get_height() / 2))
