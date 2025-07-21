@@ -8,16 +8,6 @@ class SpriteLoader:
         self.sprite_sheet = pg.image.load(sprite_path)
         self.sprite_sheet = pg.transform.rotozoom(self.sprite_sheet, 0, self.SCALE)
 
-        blue_bird_img = self.get_sprite(87, 491, 105, 505)
-        blue_bird2_img = self.get_sprite(115, 329, 133, 343)
-        blue_bird3_img = self.get_sprite(115, 355, 133, 369)
-        self.blue_bird_imgs = (blue_bird_img, blue_bird2_img, blue_bird3_img)
-
-        red_bird_img = self.get_sprite(115, 381, 133, 395)
-        red_bird2_img = self.get_sprite(115, 407, 133, 421)
-        red_bird3_img = self.get_sprite(115, 433, 133, 447)
-        self.red_bird_imgs = (red_bird_img, red_bird2_img, red_bird3_img)
-
     def get_sprite(self, x1, y1, x2, y2):
         """ Gets a sprite from the sprite sheet """
         start_pos = pg.Vector2(x1, y1) * self.SCALE  # since sprite sheet is scaled
@@ -68,7 +58,8 @@ class SpriteLoader:
         start_img = self.get_sprite(354, 118, 407, 148)
         day_img = self.get_sprite(376, 159, 429, 189)
         night_img = self.get_sprite(434, 159, 487, 189)
-        main_menu_imgs = (title_img, start_img, day_img, night_img)
+        bird_change_img = self.get_sprite(474, 117, 505, 137)
+        main_menu_imgs = (title_img, start_img, day_img, night_img, bird_change_img)
         return main_menu_imgs
 
     def get_game_over(self):
@@ -91,7 +82,7 @@ class SpriteLoader:
     def get_sparkle(self):
         frame_1 = self.get_sprite(70, 321, 78, 329)
         frame_2 = self.get_sprite(70, 330, 78, 338)
-        frame_3 = self.get_sprite(70, 339, 78, 347)
+        frame_3 = self.get_sprite(70, 340, 78, 348)
         frame_imgs = (frame_1, frame_2, frame_3)
         return frame_imgs
 
@@ -112,8 +103,20 @@ class SpriteLoader:
         return score_imgs
 
     def get_bird(self):
-        bird_img = self.get_sprite(3, 491, 21, 505)
-        bird2_img = self.get_sprite(31, 491, 49, 505)
-        bird3_img = self.get_sprite(59, 491, 77, 505)
-        bird_imgs = (bird_img, bird2_img, bird3_img)
-        return bird_imgs
+        yellow_bird_1_img = self.get_sprite(3, 491, 21, 505)
+        yellow_bird_2_img = self.get_sprite(31, 491, 49, 505)
+        yellow_bird_3_img = self.get_sprite(59, 491, 77, 505)
+        yellow_bird_imgs = (yellow_bird_1_img, yellow_bird_2_img, yellow_bird_3_img)
+
+        blue_bird_1_img = self.get_sprite(87, 491, 105, 505)
+        blue_bird_2_img = self.get_sprite(115, 329, 133, 343)
+        blue_bird_3_img = self.get_sprite(115, 355, 133, 369)
+        blue_bird_imgs = (blue_bird_1_img, blue_bird_2_img, blue_bird_3_img)
+
+        red_bird_1_img = self.get_sprite(115, 381, 133, 395)
+        red_bird_2_img = self.get_sprite(115, 407, 133, 421)
+        red_bird_3_img = self.get_sprite(115, 433, 133, 447)
+        red_bird_imgs = (red_bird_1_img, red_bird_2_img, red_bird_3_img)
+
+        birds_imgs = (yellow_bird_imgs, blue_bird_imgs, red_bird_imgs)
+        return birds_imgs

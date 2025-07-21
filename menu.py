@@ -6,18 +6,25 @@ class MainMenu:
     start_pos = pg.Vector2(125, 600)  # divide with scaling to get raw value
     mode_pos = pg.Vector2(375, 600)
     bird_pos = pg.Vector2(250, 350)
+    bird_skin_pos = pg.Vector2(435, 850)
 
-    def __init__(self, images: tuple[pg.Surface], bird_imgs: tuple[pg.Surface], anim_cooldown):
+    def __init__(self, images: tuple[pg.Surface], bird_imgs: tuple[tuple[pg.Surface]], anim_cooldown):
 
         self.title_img = images[0]
         self.start_img = images[1]
         self.day_img = images[2]
         self.night_img = images[3]
-        self.bird_imgs = bird_imgs + (bird_imgs[1], )
+        self.bird_skin_img = images[4]
+        self.bird_imgs = bird_imgs
+
+        self.bird_skin_idx = 0
+
+        self.bird_skin = self.bird_imgs[self.bird_skin_idx] + (self.bird_imgs[self.bird_skin_idx][1], )
 
         self.title_rect = self.title_img.get_rect(center=self.title_pos)
         self.start_rect = self.start_img.get_rect(center=self.start_pos)
         self.mode_rect = self.day_img.get_rect(center=self.mode_pos)
+        self.bird_skin_rect = self.bird_skin_img.get_rect(center=self.bird_skin_pos)
 
         self.animation_cooldown = anim_cooldown  # milliseconds
         self.bird_frame = 0
@@ -28,14 +35,14 @@ class MainMenu:
         if current_time - self.last_time > self.animation_cooldown:
             self.last_time = current_time
             self.bird_frame += 1
-            if self.bird_frame >= len(self.bird_imgs):
+            if self.bird_frame >= len(self.bird_skin):
                 self.bird_frame = 0
 
     def draw(self, screen: pg.Surface, day_time: bool):
         screen.blit(self.title_img, self.title_rect)
         screen.blit(self.start_img, self.start_rect)
 
-        bird_img = self.bird_imgs[self.bird_frame]
+        bird_img = self.bird_skin[self.bird_frame]
         bird_rect = bird_img.get_rect(center=self.bird_pos)
         screen.blit(bird_img, bird_rect)
 
@@ -46,6 +53,8 @@ class MainMenu:
             mode_rect = mode_img.get_rect(center=self.mode_pos)
         screen.blit(mode_img, mode_rect)
 
+        screen.blit(self.bird_skin_img, self.bird_skin_rect)
+
     def start_pressed(self, mouse_pos):
         if self.start_rect.collidepoint(mouse_pos):
             return True
@@ -53,6 +62,16 @@ class MainMenu:
 
     def mode_pressed(self, mouse_pos):
         if self.mode_rect.collidepoint(mouse_pos):
+            return True
+        return False
+
+    def bird_skin_pressed(self, mouse_pos):
+        if self.bird_skin_rect.collidepoint(mouse_pos):
+            self.bird_skin_idx += 1
+            if self.bird_skin_idx >= len(self.bird_imgs):
+                self.bird_skin_idx = 0
+            self.bird_skin = (self.bird_imgs[self.bird_skin_idx] +
+                              (self.bird_imgs[self.bird_skin_idx][1],))
             return True
         return False
 

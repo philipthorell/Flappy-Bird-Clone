@@ -11,14 +11,20 @@ class Bird:
     dead = False
     death_anim = False
 
-    def __init__(self, images: tuple[pg.Surface], SCREEN_HEIGHT):
+    def __init__(self, images: tuple[tuple[pg.Surface]], SCREEN_HEIGHT):
 
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
 
-        self.image = images[0]
-        self.falling_img = images[0]
-        self.mid_flap_img = images[1]
-        self.full_flap_img = images[2]
+        self.birds_imgs = images
+
+        self.bird_idx = 0
+
+        self.current_bird_imgs = self.birds_imgs[self.bird_idx]
+
+        self.image = self.current_bird_imgs[0]
+        self.falling_img = self.current_bird_imgs[0]
+        self.mid_flap_img = self.current_bird_imgs[1]
+        self.full_flap_img = self.current_bird_imgs[2]
         self.rect = self.image.get_rect()
         self.rect.center = (self.x + (self.rect.width / 2),
                             self.y + (self.rect.height / 2))
@@ -77,3 +83,15 @@ class Bird:
         self.jumping = False
         self.dead = False
         self.death_anim = False
+
+    def change_skin(self):
+        self.bird_idx += 1
+        if self.bird_idx >= len(self.birds_imgs):
+            self.bird_idx = 0
+
+        self.current_bird_imgs = self.birds_imgs[self.bird_idx]
+
+        self.image = self.current_bird_imgs[0]
+        self.falling_img = self.current_bird_imgs[0]
+        self.mid_flap_img = self.current_bird_imgs[1]
+        self.full_flap_img = self.current_bird_imgs[2]

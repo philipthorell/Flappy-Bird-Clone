@@ -9,8 +9,9 @@ from debug import Debug
 
 
 """
-    ADD BIRD COLOR SWITCHING
-    ADD SOUNDS
+    TODO:
+
+        ADD SOUNDS
 """
 
 
@@ -224,6 +225,12 @@ class Game:
                 pg.Vector2(self.main_menu_screen.mode_pos),
                 coords_color="black"
             )
+            self.debug.show(
+                self.main_menu_screen.bird_skin_rect,
+                None,
+                pg.Vector2(self.main_menu_screen.bird_skin_pos),
+                coords_color="black"
+            )
 
         elif self.gaming:
             self.debug.show_ground(
@@ -249,9 +256,9 @@ class Game:
 
         elif self.game_over:
             self.debug.show(
-                self.game_over_screen.score_imgs[0].get_rect(center=self.game_over_screen.score1_pos),
+                self.game_over_screen.sparkle_imgs[self.game_over_screen.sparkle_frame].get_rect(center=self.game_over_screen.sparkle_pos),
                 None,
-                None
+                self.game_over_screen.sparkle_pos
             )
 
     def handle_input(self, event):
@@ -275,6 +282,8 @@ class Game:
                     self.main_menu = False
                 elif self.main_menu_screen.mode_pressed(mouse_pos):
                     self.change_sprites()
+                elif self.main_menu_screen.bird_skin_pressed(mouse_pos):
+                    self.bird.change_skin()
 
             elif self.gaming and not self.bird.dead and not self.bird.jumping:
                 self.bird.jumping = True
