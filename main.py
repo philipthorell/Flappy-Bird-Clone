@@ -12,7 +12,6 @@ from debug import Debug
     TODO:
 
         ADD SOUNDS
-        ADD ICON
 """
 
 
