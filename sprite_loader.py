@@ -4,7 +4,7 @@ import pygame as pg
 class SpriteLoader:
     def __init__(self, SCALE):
         self.SCALE = SCALE
-        sprite_path = "D:/Game Sprites/Flappy Bird/Mobile - Flappy Bird - Version 12 Sprites.png"
+        sprite_path = "flappy bird spritesheet.png"
         self.sprite_sheet = pg.image.load(sprite_path)
         self.sprite_sheet = pg.transform.rotozoom(self.sprite_sheet, 0, self.SCALE)
 

@@ -12,6 +12,7 @@ from debug import Debug
     TODO:
 
         ADD SOUNDS
+        ADD ICON
 """
 
 
@@ -46,6 +47,9 @@ class Game:
         pg.init()
 
         self.sprite_loader = SpriteLoader(self.SCALE)
+
+        icon = self.sprite_loader.get_bird()[0][0]
+        pg.display.set_icon(icon)
 
         self.cursor = self.sprite_loader.get_cursor()
 
