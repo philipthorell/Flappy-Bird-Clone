@@ -16,5 +16,5 @@ as well as some re-sprites of the buttons to fit the modifications.
 
 
 ### Credit:
-sprites from: [The Spriters Resource](https://store.steampowered.com/app/2056220/Bloody_Hell/)  
+sprites from: [The Spriters Resource](https://www.spriters-resource.com/fullview/59894/)  
 sounds from: [101 Soundboards](https://www.101soundboards.com/boards/10178-flappy-bird-sounds)
