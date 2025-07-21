@@ -61,6 +61,7 @@ class GameOver:
     title_pos = pg.Vector2(504 / 2, 200)
     board_pos = pg.Vector2(504 / 2, 896 / 2)
     medal_pos = pg.Vector2(138, 458)  # divide with scaling to get raw value
+    sparkle_pos = pg.Vector2(160, 430)
     score1_pos = pg.Vector2(400 - (25 * 2), 420)
     score2_pos = pg.Vector2(400 - 25, 420)
     score3_pos = pg.Vector2(400, 420)
@@ -74,14 +75,17 @@ class GameOver:
     def __init__(self,
                  images: tuple[pg.Surface],
                  medal_images: tuple[pg.Surface],
+                 sparkle_images: tuple[pg.Surface],
                  score_images: tuple[pg.Surface],
-                 medal_tiers: tuple[int, int, int, int]):
+                 medal_tiers: tuple[int, int, int, int],
+                 anim_cooldown: int):
         self.title_img = images[0]
         self.board_img = images[1]
         self.new_img = images[2]
         self.menu_img = images[3]
         self.ok_img = images[4]
         self.medal_imgs = medal_images
+        self.sparkle_imgs = sparkle_images + (sparkle_images[1], )
         self.score_imgs = score_images
 
         self.medal_tiers = medal_tiers
@@ -91,6 +95,18 @@ class GameOver:
         self.new_rect = self.new_img.get_rect(center=self.new_pos)
         self.menu_rect = self.menu_img.get_rect(center=self.menu_pos)
         self.ok_rect = self.ok_img.get_rect(center=self.ok_pos)
+
+        self.animation_cooldown = anim_cooldown  # milliseconds
+        self.sparkle_frame = 0
+        self.last_time = pg.time.get_ticks()
+
+    def animation(self):
+        current_time = pg.time.get_ticks()
+        if current_time - self.last_time > self.animation_cooldown:
+            self.last_time = current_time
+            self.sparkle_frame += 1
+            if self.sparkle_frame >= len(self.sparkle_imgs):
+                self.sparkle_frame = 0
 
     def show_medal(self, screen, high_score):
         if high_score >= self.medal_tiers[3]:
@@ -106,6 +122,10 @@ class GameOver:
 
         medal_rect = medal_img.get_rect(center=self.medal_pos)
         screen.blit(medal_img, medal_rect)
+
+        sparkle_img = self.sparkle_imgs[self.sparkle_frame]
+        sparkle_rect = sparkle_img.get_rect(center=self.sparkle_pos)
+        screen.blit(sparkle_img, sparkle_rect)
 
     def get_score_str(self, score):
         score_str = str(score).zfill(3)

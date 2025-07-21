@@ -88,6 +88,13 @@ class SpriteLoader:
         medal_imgs = (bronze_img, silver_img, gold_img, platinum_img)
         return medal_imgs
 
+    def get_sparkle(self):
+        frame_1 = self.get_sprite(70, 321, 78, 329)
+        frame_2 = self.get_sprite(70, 330, 78, 338)
+        frame_3 = self.get_sprite(70, 339, 78, 347)
+        frame_imgs = (frame_1, frame_2, frame_3)
+        return frame_imgs
+
     def get_score(self):
         score_zero_img = self.get_sprite(147, 258, 157, 271)
         score_one_img = self.get_sprite(158, 258, 166, 271)

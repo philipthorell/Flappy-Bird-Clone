@@ -8,6 +8,12 @@ from menu import MainMenu, GameOver
 from debug import Debug
 
 
+"""
+    ADD BIRD COLOR SWITCHING
+    ADD SOUNDS
+"""
+
+
 class Game:
     FPS = 60
     SCALE = 3.5  # 3.5
@@ -32,6 +38,9 @@ class Game:
 
     day = True
 
+    bird_anim_cooldown = 75
+    sparkle_anim_cooldown = 250
+
     def __init__(self):
         pg.init()
 
@@ -47,6 +56,7 @@ class Game:
         main_menu_imgs = self.sprite_loader.get_main_menu()
         game_over_imgs = self.sprite_loader.get_game_over()
         medal_imgs = self.sprite_loader.get_medal()
+        sparkle_imgs = self.sprite_loader.get_sparkle()
         score_imgs = self.sprite_loader.get_score()
 
         self.background_img = self.bg_imgs[0]
@@ -56,9 +66,10 @@ class Game:
         pipe2 = Pipe(self.pipe_imgs, self.WIDTH, self.VELOCITY, 2, self.day)
         pipe3 = Pipe(self.pipe_imgs, self.WIDTH, self.VELOCITY, 3, self.day)
         self.pipes = [pipe1, pipe2, pipe3]
-        self.main_menu_screen = MainMenu(main_menu_imgs, bird_imgs, 75)
-        self.game_over_screen = GameOver(game_over_imgs, medal_imgs, score_imgs,
-                                         (self.bronze, self.silver, self.gold, self.platinum))
+        self.main_menu_screen = MainMenu(main_menu_imgs, bird_imgs, self.bird_anim_cooldown)
+        self.game_over_screen = GameOver(game_over_imgs, medal_imgs, sparkle_imgs, score_imgs,
+                                         (self.bronze, self.silver, self.gold, self.platinum),
+                                         self.sparkle_anim_cooldown)
 
         self.main_menu = True
         self.game_over = False
@@ -125,6 +136,7 @@ class Game:
                 self.new_high_score = False
 
         elif self.game_over:
+            self.game_over_screen.animation()
             if not self.updated_score_file:
                 self.update_high_score()
 
