@@ -65,8 +65,8 @@ class Bird:
 
         screen.blit(self.image, (self.x, self.y))
 
-    def check_collision(self, ground_y, pipes: list):
-        if self.rect.collidepoint(self.rect.x, ground_y):
+    def check_collision(self, ground_y, pipes: list, roof_y):
+        if self.rect.collidepoint(self.rect.x, ground_y) or self.y < roof_y:
             self.dead = True
 
         for pipe in pipes:

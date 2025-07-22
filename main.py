@@ -36,6 +36,8 @@ class Game:
     bird_anim_cooldown = 75
     sparkle_anim_cooldown = 250
 
+    roof_y = -100
+
     def __init__(self):
         pg.init()
 
@@ -150,7 +152,7 @@ class Game:
                         self.audio.play_point()
                         pipe.passed = True
 
-            self.bird.check_collision(self.ground.y, self.pipes)
+            self.bird.check_collision(self.ground.y, self.pipes, self.roof_y)
 
             self.bird.update(self.audio)
 
