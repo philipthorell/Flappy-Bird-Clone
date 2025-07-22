@@ -16,8 +16,6 @@ class Game:
     WIDTH, HEIGHT = 144 * SCALE, 256 * SCALE
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     pg.display.set_caption("Flappy Birb")
-    icon = pg.image.load("icon.png")
-    pg.display.set_icon(icon)
     pg.mouse.set_visible(False)
     clock = pg.time.Clock()
     running = True
@@ -43,6 +41,9 @@ class Game:
 
         self.audio = Audio()
         self.sprite_loader = SpriteLoader(self.SCALE)
+
+        icon = self.sprite_loader.get_bird()[0][0]
+        pg.display.set_icon(icon)
 
         self.cursor = self.sprite_loader.get_cursor()
 
