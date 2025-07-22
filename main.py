@@ -5,14 +5,8 @@ from ground import Ground
 from bird import Bird
 from pipe import Pipe
 from menu import MainMenu, GameOver
+from audio import Audio
 from debug import Debug
-
-
-"""
-    TODO:
-
-        ADD SOUNDS
-"""
 
 
 class Game:
@@ -45,6 +39,7 @@ class Game:
     def __init__(self):
         pg.init()
 
+        self.audio = Audio()
         self.sprite_loader = SpriteLoader(self.SCALE)
 
         icon = self.sprite_loader.get_bird()[0][0]
@@ -152,11 +147,12 @@ class Game:
                     pipe.move()
                     if not pipe.passed and self.bird.x > pipe.x + pipe.width:
                         self.points += 1
+                        self.audio.play_point()
                         pipe.passed = True
 
             self.bird.check_collision(self.ground.y, self.pipes)
 
-            self.bird.update()
+            self.bird.update(self.audio)
 
             if self.bird.y > self.HEIGHT:
                 self.game_over = True
@@ -272,6 +268,7 @@ class Game:
             if self.gaming and event.key == pg.K_SPACE and not self.bird.dead and not self.bird.jumping:
                 self.bird.jumping = True
                 self.bird.jump()
+                self.audio.play_flap()
 
         if self.gaming and event.type == pg.KEYUP:
             if event.key == pg.K_SPACE and self.bird.jumping:
@@ -291,6 +288,7 @@ class Game:
             elif self.gaming and not self.bird.dead and not self.bird.jumping:
                 self.bird.jumping = True
                 self.bird.jump()
+                self.audio.play_flap()
 
             elif self.game_over:
                 if self.game_over_screen.menu_pressed(mouse_pos):
@@ -320,6 +318,7 @@ class Game:
 
             self.clock.tick(self.FPS)
 
+        pg.mixer.quit()
         pg.quit()
 
 

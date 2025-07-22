@@ -30,10 +30,17 @@ class Bird:
                             self.y + (self.rect.height / 2))
         self.mask = pg.mask.from_surface(self.image)
 
+        self.hit_time = 0
+        self.played_death_sfx = False
+
     def jump(self):
         self.y_velocity = self.jump_power
 
-    def update(self):
+    def update(self, audio):
+        if self.hit_time != 0 and not self.played_death_sfx and pg.time.get_ticks() - self.hit_time >= 500:
+            self.played_death_sfx = True
+            audio.play_die()
+
         if self.y <= self.SCREEN_HEIGHT:
             self.y_velocity += self.gravity
             self.y += self.y_velocity
@@ -41,6 +48,8 @@ class Bird:
                                 self.y + (self.rect.height / 2))
 
         if self.dead and not self.death_anim:
+            audio.play_hit()
+            self.hit_time = pg.time.get_ticks()
             self.death_animation()
 
     def draw(self, screen: pg.Surface):
@@ -83,6 +92,9 @@ class Bird:
         self.jumping = False
         self.dead = False
         self.death_anim = False
+
+        self.played_death_sfx = False
+        self.hit_time = 0
 
     def change_skin(self):
         self.bird_idx += 1
