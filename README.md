@@ -4,14 +4,7 @@ It includes, day- and night mode, 3 different bird colors,
 as well as some re-sprites of the buttons to fit the modifications.
 
 
-**Menu preview**  
-![Gameplay preview](/previews/menu.png)
-
-**Gameplay preview**  
-![Gameplay preview](/previews/gameplay.png)
-
-**Game-over preview**  
-![Gameplay preview](/previews/game_over.png)
+![Menu preview](/previews/menu.png) ![Gameplay preview](/previews/gameplay.png) ![Gameover preview](/previews/game_over.png)
 
 
 
