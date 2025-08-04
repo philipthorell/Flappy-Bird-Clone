@@ -1,0 +1,15 @@
+# IDE and environment
+.idea/
+.venv/
+
+# cache
+__pycache__/
+
+# compilation
+build/
+compile_things/
+dist/
+main.spec
+
+# file to keep track of players score
+score.txt
